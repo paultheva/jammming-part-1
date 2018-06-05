@@ -20,26 +20,29 @@ const Spotify = {
     }
   },
 
-  search(term) {
-    const searchUrl = `https://api.spotify.com/v1/search?type=track&q=${term.replace(' ', '%20')}`;
-    return fetch(searchUrl, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`
-        }
-      })
-      .then(response => response.json())
-      .then(jsonResponse => {
-        if (!jsonResponse.tracks) return [];
-        return jsonResponse.tracks.items.map(track => {
-          return {
-            id: track.id,
-            name: track.name,
-            artist: track.artists[0].name,
-            album: track.album.name,
-            uri: track.uri
-          }
-        })
-      });
+  async search(term) {
+  try {
+  	let response = await fetch(`https://api.spotify.com/v1/search?type=track&q=${term}`, {
+  	method: 'GET',
+  		headers: {
+  	  Authorization: `Bearer ${accessToken}`
+  	}
+  	});
+  	if (response.ok) {
+  		let jsonResponse = await response.json();
+  		let tracks = jsonResponse.tracks.items.map(track => ({
+  			id: track.id,
+  			name: track.name,
+  			artist: track.artists[0].name,
+  			album: track.album.name,
+  			uri: track.uri,
+  			preview: track.preview_url
+  		}));
+  		return tracks;
+  	}
+  } catch (error) {
+  	console.log(error);
+  	}
   },
 
   async savePlaylist(name, trackURIs) {
