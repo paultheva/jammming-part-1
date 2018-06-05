@@ -1,6 +1,5 @@
 // import React
 import React from 'react';
-import ReactDOM from 'react-dom';
 // import CSS
 import './App.css';
 // import Components and Utilities
